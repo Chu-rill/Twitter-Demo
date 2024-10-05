@@ -1,0 +1,12 @@
+const express = require("express");
+const userController = require("../controllers/user.controller");
+const { protect, authorizeUser } = require("../middleWare/authorize");
+
+const userRoutes = express.Router();
+
+userRoutes.get("/users", protect, userController.getAllUsers);
+userRoutes.get("/user/:id", protect, userController.getUser);
+userRoutes.put("/update-user/:id", authorizeUser, userController.updateUser);
+userRoutes.delete("/delete-user/:id", authorizeUser, userController.deleteUser);
+
+module.exports = userRoutes;
