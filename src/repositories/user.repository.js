@@ -3,7 +3,7 @@ const User = require("../models/User");
 class UserRepository {
   // Find all users
   async findAll() {
-    return await User.find().limit(20);
+    return await User.find().limit(10).select("-password");
   }
 
   // Find user by ID
@@ -22,10 +22,6 @@ class UserRepository {
     return user;
   }
 
-  // Update a user by ID
-  // async update(id, updatedUser) {
-  //   return await User.findByIdAndUpdate(id, updatedUser);
-  // }
   async update(id, updatedUser) {
     return await User.findByIdAndUpdate(id, updatedUser, {
       new: true,

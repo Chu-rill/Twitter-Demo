@@ -37,21 +37,6 @@ class UserController {
       return res.status(500).json({ message: "Internal server error" });
     }
   }
-
-  // async updateUser(req, res) {
-  //   const { id } = req.params;
-  //   const {username,password} = req.body
-  //   try {
-  //     const updatedUser = await userService.updateUser(id, req.body);
-  //     if (!updatedUser) {
-  //       return res.status(404).json({ message: "User not found" });
-  //     }
-  //     return res.json(updatedUser);
-  //   } catch (err) {
-  //     console.error("Update user error:", err);
-  //     return res.status(500).json({ message: "Internal server error" });
-  //   }
-  // }
   async updateUser(req, res) {
     const { id } = req.params;
     const updateData = req.body;
