@@ -3,7 +3,7 @@ const Tweet = require("../models/Tweet");
 class TweetRepository {
   // Find all users
   async findAll() {
-    return await Tweet.find().limit(30);
+    return await Tweet.find().limit(10);
   }
 
   // Find user by ID

@@ -11,7 +11,7 @@ exports.create_tweet = joi.object({
     "string.empty": "username is required",
     "any.required": "username is a required field",
   }),
-  profilePicture: joi.string().optional().messages({
+  profilePicture: joi.string().optional().allow("").messages({
     "string.base": "profilePicture must be a string",
   }),
   likes: joi.number().optional().messages({
@@ -23,7 +23,7 @@ exports.create_tweet = joi.object({
   views: joi.number().optional().messages({
     "number.base": "views must be a number",
   }),
-  user: joi.string().optional().messages({
+  user: joi.string().required().messages({
     "string.base": "user must be a string",
     "string.empty": "user is required",
     "any.required": "user is a required field",

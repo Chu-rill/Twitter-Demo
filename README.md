@@ -1,18 +1,6 @@
-### **Backend README**
+# Twitter-Demo
 
-<!-- ```md -->
-
-# Express Template JS
-
-An Express.js project template to kickstart your Node.js applications with a basic setup.
-
-## Features
-
-**Express.js:** A minimalist web framework for Node.js.
-**ESLint:** For linting JavaScript code.
-**Pre-configured Routes:** Basic routing setup to get started with.
-**Environment Variables:** Uses .env file for environment configuration.
-**Nodemon:** For auto-restarting the server during development.
+This project is a basic implementation of a Twitter-like platform using Node.js, Express, MongoDB, and Mongoose for backend operations. It includes core functionalities such as creating tweets, fetching all tweets, liking, and retweeting tweets, along with user management.
 
 # Project Structure
 
@@ -60,54 +48,94 @@ Twitter-Demo/
 └── vercel.json
 ```
 
-# Prerequisites
+# Routes and API Documentation
 
-1. Node.js (v14 or higher)
-2. NPM or Yarn
+# **User Routes**
 
-# Installation
+1. **POST** /api/users/register
+   **Description:** Register a new user.
+   Request Body:
 
-1. Clone the repository:
+   ```json
+   {
+     "username": "string",
+     "email": "string",
+     "password": "string",
+     "bio": "string (optional)"
+   }
+   ```
 
-```bash
-git clone https://github.com/Chu-rill/express-template-js.git
+   **Response:**
+   . 201 Created: Returns the newly created user details.
+   . 400 Bad Request: If the user already exists or invalid data is provided.
 
-```
+2. **POST** /api/users/login
+   ** Description:** Log in a user.
+   Request Body:
 
-2. Navigate to the project directory:
+   ```json
+   {
+     "email": "string",
+     "password": "string"
+   }
+   ```
 
-```bash
-cd express-template-js
-```
+   **Response:**
+   . 201 Created: Returns the newly created user details.
+   . 401 Unauthorized: If the credentials are invalid.
 
-3. Install dependencies:
+3. **GET** /api/users/
+   **Description:** Get details of a specific user by ID.
+   **Response:**
+   . 200 OK: Returns user information (excluding password).
+   . 404 Not Found: If the user does not exist.
 
-```bash
-npm install
-```
+# **Tweet Routes**
 
-4. Create a .env file based on the .env.example:
+1. **POST** /api/tweets
+   ** Description:** Create a new tweet.
+   Request Headers:
 
-```bash
-cp .env.example .env
-```
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
 
-5. Start the development server:
+   **Request Body:**
 
-```bash
-npm run dev
-```
+   ```json
+   {
+     "tweet": "string",
+     "media": "string (optional)",
+     "profilePicture": "string (optional)",
+     "user": "user_id"
+   }
+   ```
 
-# Usage
+   **Response:**
+   . 201 Created: Returns the created tweet.
+   . 401 Unauthorized: If the user is not authenticated.
 
-1. Open http://localhost:{PORT} in your browser to see the app running.
-2. Customize routes by modifying files in the routes/ folder.
+2. **GET** /api/tweets
+   **Description:** Get all tweets with pagination.
+   **Query Parameters:**
+   **limit** (optional, default is 10): Number of tweets to return per page.
+   **Response:**
+   200 OK: Returns a paginated list of tweets.
 
-# Available Scripts
+# **Requirements**
 
-1. **npm start:** Starts the server in production mode.
-2. **npm run dev:** Starts the server with Nodemon for auto-reloading during development.
+. Node.js
+. MongoDB
+. Insomnia or Postman for API testing
+. JWT tokens for authenticated routes
 
-# License
+# **Possible Outcomes**
 
-This project is licensed under the MIT License.
+. Success responses will generally return a 200 or 201 status code, with the requested data or confirmation message.
+. Error responses will return appropriate HTTP status codes:
+. 400: Bad Request (Invalid inputs)
+. 401: Unauthorized (Invalid or missing token)
+. 404: Not Found (Resource does not exist)
+. 403: Forbidden (Action not allowed for the user)

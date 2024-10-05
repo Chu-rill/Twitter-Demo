@@ -21,7 +21,7 @@ class TweetService {
       let existingTweet = await tweetRepository.getByTweet(tweetContent);
       if (existingTweet) return noDuplicateError;
 
-      const tweet = await tweetRepository.createUser({
+      const tweet = await tweetRepository.createTweet({
         tweet: tweetContent,
         username,
         media,
@@ -39,13 +39,6 @@ class TweetService {
         statusCode: httpStatus.CREATED,
         data: {
           tweet,
-          username,
-          media,
-          profilePicture,
-          likes,
-          retweet,
-          views,
-          user,
         },
       };
     } catch (error) {
