@@ -85,6 +85,22 @@ class TweetController {
       });
     }
   }
+
+  async getUserTweets(req, res) {
+    const { id } = req.params;
+    console.log("Received userId:", id);
+    if (!id) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+    try {
+      const response = await tweetService.getUserTweets(id);
+
+      return res.status(response.statusCode).send(response);
+    } catch (err) {
+      console.error("Delete error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
 
 module.exports = new TweetController();

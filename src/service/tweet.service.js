@@ -5,7 +5,8 @@ const {
 } = require("../error/error");
 const httpStatus = require("http-status");
 const tweetRepository = require("../repositories/tweet.repository");
-
+const NodeCache = require("node-cache");
+const myCache = new NodeCache();
 class TweetService {
   async createTweet(
     tweetContent,
@@ -66,9 +67,27 @@ class TweetService {
 
   async getAllTweet() {
     try {
+      const cacheKey = "allTweet";
+
+      // Check if tweet are in the cache
+      const cachedTweets = myCache.get(cacheKey);
+      if (cachedTweets) {
+        return {
+          status: "success",
+          error: false,
+          statusCode: httpStatus.OK,
+          message: "Tweet retrieved successfully ",
+          data: cachedTweets,
+        };
+      }
+
+      // If not in cache, fetch from the database
       const tweet = await tweetRepository.findAll();
       if (!tweet || tweet.length === 0)
         return { status: "error", message: "No tweet found." };
+
+      // Store the users in the cache
+      myCache.set(cacheKey, tweet, 600);
 
       return {
         status: "success",
@@ -135,6 +154,49 @@ class TweetService {
     } catch (error) {
       console.error(error);
       return defaultError(error); // Assuming defaultError is a utility to handle errors
+    }
+  }
+
+  async getUserTweets(userId) {
+    try {
+      //check cache for tweets
+      const cachedTweets = myCache.get(userId);
+
+      if (cachedTweets) {
+        return {
+          status: "success",
+          error: false,
+          statusCode: httpStatus.OK,
+          message: "Tweets retrieved successfully ",
+          data: cachedTweets,
+        };
+      }
+      // Find all tweets by the userId
+      const tweets = await tweetRepository.findUserTweet(userId);
+
+      // If no tweets found, return an error message
+      if (!tweets || tweets.length === 0) {
+        return {
+          status: "error",
+          statusCode: httpStatus.NOT_FOUND,
+          message: "No tweets found for this user.",
+          error: true,
+        };
+      }
+
+      // Cache the tweets for future requests
+      myCache.set(userId, tweets);
+      // Return success response with tweets
+      return {
+        status: "success",
+        error: false,
+        statusCode: httpStatus.OK,
+        message: "Tweets retrieved successfully",
+        data: tweets,
+      };
+    } catch (error) {
+      console.error(error);
+      return defaultError;
     }
   }
 }

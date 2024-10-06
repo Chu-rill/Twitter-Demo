@@ -11,6 +11,11 @@ class TweetRepository {
     return await Tweet.findById(id);
   }
 
+  //find tweet by userId
+  async findUserTweet(userId) {
+    return await Tweet.find({ user: userId });
+  }
+
   // Create a new user
   async createTweet({
     tweet: tweetContent,

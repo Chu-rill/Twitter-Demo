@@ -14,5 +14,6 @@ tweetRoutes.post(
 tweetRoutes.get("/tweets", protect, tweetController.getAllTweet);
 tweetRoutes.delete("/delete-tweet/:id", protect, tweetController.deleteTweet);
 tweetRoutes.get("/tweet/:id", protect, tweetController.getTweet);
+tweetRoutes.get("/tweets/:id", protect, tweetController.getUserTweets);
 tweetRoutes.put("/update-tweet/:id", protect, tweetController.updateTweet);
 module.exports = tweetRoutes;

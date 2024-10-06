@@ -50,7 +50,7 @@ Twitter-Demo/
 
 # Routes and API Documentation
 
-# **User Routes**
+# **Auth Routes**
 
 1. **POST** /api/users/register
    **Description:** Register a new user.
@@ -126,16 +126,16 @@ Twitter-Demo/
 
 # **Requirements**
 
-. Node.js
-. MongoDB
-. Insomnia or Postman for API testing
-. JWT tokens for authenticated routes
+1. Node.js
+2. MongoDB
+3. Insomnia or Postman for API testing
+4. JWT tokens for authenticated routes
 
 # **Possible Outcomes**
 
-. Success responses will generally return a 200 or 201 status code, with the requested data or confirmation message.
-. Error responses will return appropriate HTTP status codes:
-. 400: Bad Request (Invalid inputs)
-. 401: Unauthorized (Invalid or missing token)
-. 404: Not Found (Resource does not exist)
-. 403: Forbidden (Action not allowed for the user)
+1. Success responses will generally return a 200 or 201 status code, with the requested data or confirmation message.
+   . Error responses will return appropriate HTTP status codes:
+1. 400: Bad Request (Invalid inputs)
+1. 401: Unauthorized (Invalid or missing token)
+1. 404: Not Found (Resource does not exist)
+1. 403: Forbidden (Action not allowed for the user)

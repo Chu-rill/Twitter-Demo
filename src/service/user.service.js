@@ -8,6 +8,8 @@ const {
 } = require("../error/error");
 const httpStatus = require("http-status");
 const userRepository = require("../repositories/user.repository");
+const NodeCache = require("node-cache");
+const myCache = new NodeCache();
 
 class UserService {
   async loginUser(username, password) {
@@ -81,9 +83,27 @@ class UserService {
 
   async getAllUsers() {
     try {
+      const cacheKey = "allUsers";
+
+      // Check if users are in the cache
+      const cachedUsers = myCache.get(cacheKey);
+      if (cachedUsers) {
+        return {
+          status: "success",
+          error: false,
+          statusCode: httpStatus.OK,
+          message: "Users retrieved successfully ",
+          data: cachedUsers,
+        };
+      }
+
+      // If not in cache, fetch from the database
       const users = await userRepository.findAll();
       if (!users || users.length === 0)
         return { status: "error", message: "No users found." };
+
+      // Store the users in the cache
+      myCache.set(cacheKey, users, 600);
 
       return {
         status: "success",
