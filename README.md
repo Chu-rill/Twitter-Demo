@@ -232,6 +232,110 @@ Twitter-Demo/
    }
    ```
 
+5. **POST** /api/v1/user/follow-user
+   **Description:** Follow a user .
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   Request Body:
+
+   ```json
+   {
+     "followerId": "",
+     "followeeId": ""
+   }
+   ```
+
+   **Response:**
+
+   ```json
+   {
+     "status": "success",
+     "error": false,
+     "statusCode": 200,
+     "message": "You have followed ${followee.username}"
+   }
+   ```
+
+6. **GET** /api/v1/user/followers/:id
+   **Description:** Get a user followers by the ID.
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   **Response:**
+
+   ```json
+   {
+     "status": "success",
+     "error": false,
+     "statusCode": 200,
+     "message": "Followers for ${followee.username} retrieved successfully",
+     "data": []
+   }
+   ```
+
+7. **GET** /api/v1/user/following/:id
+   **Description:** Get a user following by the ID.
+   Request Headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT token>"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "error": false,
+  "statusCode": 200,
+  "message": "Following for ${followee.username} retrieved successfully",
+  "data": []
+}
+```
+
+8. **POST** /api/v1/user/unfollow-user
+   **Description:** Unfollow a user .
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   Request Body:
+
+   ```json
+   {
+     "followerId": "",
+     "followeeId": ""
+   }
+   ```
+
+   **Response:**
+
+   ```json
+   {
+     "status": "success",
+     "error": false,
+     "statusCode": 200,
+     "message": "You have unfollowed ${followee.username}"
+   }
+   ```
+
 # **Tweet Routes**
 
 1. **POST** /api/v1/tweet/create-tweet
