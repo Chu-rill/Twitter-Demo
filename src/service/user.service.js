@@ -56,7 +56,7 @@ class UserService {
         status: "success",
         error: false,
         statusCode: httpStatus.CREATED,
-        data: { username, email, bio },
+        data: user,
       };
     } catch (error) {
       console.error(error);
@@ -83,19 +83,19 @@ class UserService {
 
   async getAllUsers() {
     try {
-      const cacheKey = "allUsers";
+      // const cacheKey = "allUsers";
 
       // Check if users are in the cache
-      const cachedUsers = myCache.get(cacheKey);
-      if (cachedUsers) {
-        return {
-          status: "success",
-          error: false,
-          statusCode: httpStatus.OK,
-          message: "Users retrieved successfully ",
-          data: cachedUsers,
-        };
-      }
+      // const cachedUsers = myCache.get(cacheKey);
+      // if (cachedUsers) {
+      //   return {
+      //     status: "success",
+      //     error: false,
+      //     statusCode: httpStatus.OK,
+      //     message: "Users retrieved successfully ",
+      //     data: cachedUsers,
+      //   };
+      // }
 
       // If not in cache, fetch from the database
       const users = await userRepository.findAll();
@@ -103,7 +103,7 @@ class UserService {
         return { status: "error", message: "No users found." };
 
       // Store the users in the cache
-      myCache.set(cacheKey, users, 600);
+      // myCache.set(cacheKey, users, 600);
 
       return {
         status: "success",
@@ -170,6 +170,120 @@ class UserService {
     } catch (error) {
       console.error(error);
       return defaultError(error); // Assuming defaultError is a utility to handle errors
+    }
+  }
+  async followUser(followerId, followeeId) {
+    try {
+      const follower = await userRepository.findById(followerId);
+      const followee = await userRepository.findById(followeeId);
+
+      // Ensure the followee isn't already followed
+      if (!follower.followingList.includes(followeeId)) {
+        // Add the followee to the follower's following list
+        follower.followingList.push(followeeId);
+        follower.following += 1;
+
+        // Add the follower to the followee's followers list
+        followee.followersList.push(followerId);
+        followee.followers += 1;
+
+        await follower.save();
+        await followee.save();
+
+        return {
+          status: "success",
+          error: false,
+          statusCode: httpStatus.OK,
+          message: `You are now following ${followee.username}`,
+        };
+      } else {
+        return {
+          status: "error",
+          message: "You are already following this user",
+        };
+      }
+    } catch (error) {
+      console.error("Follow error:", error);
+      return {
+        status: "error",
+        message: "An error occurred while following the user",
+      };
+    }
+  }
+  async viewFollowers(id) {
+    try {
+      const user = await userRepository.viewFollowers(id);
+
+      if (!user) return { status: "error", message: "User not found" };
+
+      return {
+        status: "success",
+        error: false,
+        statusCode: httpStatus.OK,
+        message: `Followers for ${user.username} retrieved successfully`,
+        data: user.followersList,
+      };
+    } catch (error) {
+      console.error("View followers error:", error);
+      return {
+        status: "error",
+        message: "An error occurred while fetching followers",
+      };
+    }
+  }
+  async viewFollowing(id) {
+    try {
+      const user = await userRepository.viewFollowing(id);
+
+      if (!user) return { status: "error", message: "User not found" };
+
+      return {
+        status: "success",
+        error: false,
+        statusCode: httpStatus.OK,
+        message: `Following list for ${user.username} retrieved successfully`,
+        data: user.followingList,
+      };
+    } catch (error) {
+      console.error("View following error:", error);
+      return {
+        status: "error",
+        message: "An error occurred while fetching following list",
+      };
+    }
+  }
+  async unfollowUser(followerId, followeeId) {
+    try {
+      const follower = await userRepository.findById(followerId);
+      const followee = await userRepository.findById(followeeId);
+
+      if (follower.followingList.includes(followeeId)) {
+        // Remove the followee from the follower's following list
+        follower.followingList.pull(followeeId);
+        follower.following -= 1;
+
+        // Remove the follower from the followee's followers list
+        followee.followersList.pull(followerId);
+        followee.followers -= 1;
+
+        await follower.save();
+        await followee.save();
+
+        return {
+          status: "success",
+          error: false,
+          statusCode: httpStatus.OK,
+          message: `You have unfollowed ${followee.username}`,
+        };
+      } else {
+        return { status: "error", message: "You are not following this user" };
+      }
+    } catch (error) {
+      console.error("Unfollow error:", error);
+      return {
+        status: "error",
+        message: "An error occurred while unfollowing the user",
+      };
     }
   }
 }

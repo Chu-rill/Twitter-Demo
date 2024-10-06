@@ -10,6 +10,18 @@ class UserRepository {
   async findById(id) {
     return await User.findById(id).select("-password");
   }
+  async viewFollowers(id) {
+    return await User.findById(id).populate(
+      "followersList",
+      "username profilePicture bio"
+    );
+  }
+  async viewFollowing(id) {
+    return await User.findById(id).populate(
+      "followingList",
+      "username profilePicture bio"
+    );
+  }
 
   // Create a new user
   async createUser({ username, password, email, bio }) {
@@ -19,7 +31,12 @@ class UserRepository {
       email,
       bio,
     });
-    return user;
+
+    const userWithoutPassword = await User.findById(user._id).select(
+      "-password"
+    );
+
+    return userWithoutPassword;
   }
 
   async update(id, updatedUser) {

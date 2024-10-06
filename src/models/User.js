@@ -12,6 +12,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  following: { type: Number, default: 0 },
+  followers: { type: Number, default: 0 },
+  followingList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  followersList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
 module.exports = mongoose.model("User", UserSchema);
