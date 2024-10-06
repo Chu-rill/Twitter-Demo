@@ -39,12 +39,8 @@ Twitter-Demo/
 │   │   ├── db.js
 │   │   └── encryption.js
 │   ├── validation
-│   │   ├── auth.validation.js
-│   │   └── tweet.validation.js
-│   └── views
-│       ├── forgetPassword.handlebars
-│       ├── welcome.hbs
-│       └── welcomeMessage.handlebars
+│      ├── auth.validation.js
+│      └── tweet.validation.js
 └── vercel.json
 ```
 
@@ -52,7 +48,7 @@ Twitter-Demo/
 
 # **Auth Routes**
 
-1. **POST** /api/users/register
+1. **POST** /api/v1/auth/signup
    **Description:** Register a new user.
    Request Body:
 
@@ -61,38 +57,184 @@ Twitter-Demo/
      "username": "string",
      "email": "string",
      "password": "string",
-     "bio": "string (optional)"
+     "bio": "string"
    }
    ```
 
    **Response:**
+
+   ```json
+   {
+     "status": "success",
+     "error": false,
+     "statusCode": 201,
+     "data": {
+       "username": "",
+       "email": "",
+       "bio": ""
+     }
+   }
+   ```
+
    . 201 Created: Returns the newly created user details.
    . 400 Bad Request: If the user already exists or invalid data is provided.
 
-2. **POST** /api/users/login
+2. **POST** /api/v1/auth/login
    ** Description:** Log in a user.
    Request Body:
 
    ```json
    {
-     "email": "string",
+     "username": "string",
      "password": "string"
    }
    ```
 
    **Response:**
+
+   ```json
+   {
+     "status": "success",
+     "error": false,
+     "statusCode": 200,
+     "user": {
+       "username": "",
+       "id": ""
+     },
+     "token": ""
+   }
+   ```
+
    . 201 Created: Returns the newly created user details.
    . 401 Unauthorized: If the credentials are invalid.
 
-3. **GET** /api/users/
-   **Description:** Get details of a specific user by ID.
+# **User Routes**
+
+1. **GET** /api/v1/user/users
+   **Description:** Get details of all user.
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
    **Response:**
-   . 200 OK: Returns user information (excluding password).
-   . 404 Not Found: If the user does not exist.
+
+```json
+{
+  "status": "success",
+  "error": false,
+  "statusCode": 200,
+  "message": "Users retrieved successfully ",
+  "data": [
+    {
+      "_id": "",
+      "username": "",
+      "email": "",
+      "profilePicture": "",
+      "bio": "",
+      "__v": 0
+    },
+    {
+      "_id": "",
+      "username": "",
+      "email": "",
+      "profilePicture": "",
+      "bio": "....",
+      "__v": 0
+    }
+  ]
+}
+```
+
+. 200 OK: Returns user information (excluding password).
+. 404 Not Found: If the user does not exist.
+
+2. **GET** /api/v1/user/user/:id
+   **Description:** Get details of a user by there ID.
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   **Response:**
+
+   ```json
+   {
+     "status": "success",
+     "error": false,
+     "statusCode": 200,
+     "message": "Users retrieved successfully",
+     "data": {
+       "_id": "",
+       "username": "",
+       "email": "",
+       "profilePicture": "",
+       "bio": "....",
+       "__v": 0
+     }
+   }
+   ```
+
+3. **PUT** /api/v1/user/update-user/:id
+   **Description:** Update a user details by there ID.
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   Request Body:
+
+   ```json
+   {
+     "updatedData": ""
+   }
+   ```
+
+   **Response:**
+
+   ```bash
+   {
+   status: "success",
+   error: false,
+   statusCode: "httpStatus.OK",
+   message: "User updated successfully",
+   data: updatedUser,
+   }
+   ```
+
+4. **DELETE** /api/v1/user/delete-user/:id
+   **Description:** delete a user by there ID.
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   **Response**
+
+   ```bash
+   {
+    status: "success",
+    error: false,
+    statusCode: httpStatus.OK,
+    message: "User deleted successfully",
+   }
+   ```
 
 # **Tweet Routes**
 
-1. **POST** /api/tweets
+1. **POST** /api/v1/tweet/create-tweet
    ** Description:** Create a new tweet.
    Request Headers:
 
@@ -107,22 +249,145 @@ Twitter-Demo/
    ```json
    {
      "tweet": "string",
+     "username": "mike",
      "media": "string (optional)",
      "profilePicture": "string (optional)",
+     "likes": 70,
+     "retweet": 35,
+     "views": 13000,
      "user": "user_id"
    }
    ```
 
    **Response:**
+
+   ```bash
+   {
+     status: "success",
+     error: false,
+     statusCode: httpStatus.CREATED,
+     data: {
+          tweet,
+        },
+   }
+   ```
+
    . 201 Created: Returns the created tweet.
    . 401 Unauthorized: If the user is not authenticated.
 
-2. **GET** /api/tweets
-   **Description:** Get all tweets with pagination.
-   **Query Parameters:**
-   **limit** (optional, default is 10): Number of tweets to return per page.
+2. **GET** /api/v1/tweet/tweets
+   **Description:** Get all tweets .
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
    **Response:**
+
+   ```json
+   {
+    "status": "success",
+   "error": false,
+   "statusCode": 200,
+   "message": "Tweet retrieved successfully ",
+   "data": [
+   	{
+   		"_id": "",
+   		"tweet": "",
+   		"username": "",
+   		"media": "",
+   		"profilePicture": "",
+   		"likes": ,
+   		"retweet": ,
+   		"views": ,
+   		"user": "",
+   		"__v": 0
+   	},
+   	{
+   		"_id": "",
+   		"tweet": "",
+   		"username": "",
+   		"media": "",
+   		"profilePicture": "",
+   		"likes": ,
+   		"retweet": ,
+   		"views": ,
+   		"user": "",
+   		"__v": 0
+   	},
+   ]
+   }
+   ```
+
    200 OK: Returns a paginated list of tweets.
+
+3. **DELETE** /api/v1/tweet/delete-tweet/:id
+   **Description:** Delete tweet based on the id .
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   **Response:**
+
+   ```bash
+   {
+    status: "success",
+    error: false,
+    statusCode: httpStatus.OK,
+    message: "Tweet deleted successfully",
+   }
+   ```
+
+4. **GET** /api/v1/tweet/tweet/:id
+   **Description:** Get a single tweet based on the id .
+   Request Headers:
+
+   ```json
+   {
+     "Authorization": "Bearer <JWT token>"
+   }
+   ```
+
+   **Response:**
+
+   ```bash
+   {
+   status: "success",
+   error: false,
+   statusCode: httpStatus.OK,
+   message: "Tweet retrieved successfully",
+   data: tweet,
+   }
+   ```
+
+5. **GET** /api/v1/tweet/tweets/:id
+   **Description:** Get all the tweet based on the userid .
+   Request Headers:
+
+```json
+{
+  "Authorization": "Bearer <JWT token>"
+}
+```
+
+    **Response:**
+
+```bash
+{
+status: "success",
+error: false,
+statusCode: httpStatus.OK,
+message: "Tweet retrieved successfully",
+data: tweet,
+}
+```
 
 # **Requirements**
 

@@ -8,7 +8,7 @@ class UserRepository {
 
   // Find user by ID
   async findById(id) {
-    return await User.findById(id);
+    return await User.findById(id).select("-password");
   }
 
   // Create a new user
