@@ -1,6 +1,6 @@
 const joi = require("joi");
 
-exports.register_query_validator = joi.object({
+exports.register = joi.object({
   username: joi.string().required().messages({
     "string.base": "Username must be a string",
     "string.empty": "Username is required",
@@ -24,7 +24,7 @@ exports.register_query_validator = joi.object({
   }),
 });
 
-exports.login_query_validator = joi.object({
+exports.login = joi.object({
   username: joi.string().required().messages({
     "string.base": "Username must be a string",
     "string.empty": "Username is required",
