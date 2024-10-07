@@ -52,6 +52,9 @@ class UserService {
       });
 
       if (!user) return defaultError;
+
+      // Invalidate the cache
+      myCache.del("allUsers"); // Remove the cached users
       return {
         status: "success",
         error: false,
@@ -69,6 +72,9 @@ class UserService {
       const user = await userRepository.delete(id);
       if (!user) return doesNotExistError;
 
+      // Invalidate the cache
+      myCache.del("allUsers"); // Remove the cached users
+
       return {
         status: "success",
         error: false,
@@ -83,19 +89,19 @@ class UserService {
 
   async getAllUsers() {
     try {
-      // const cacheKey = "allUsers";
+      const cacheKey = "allUsers";
 
       // Check if users are in the cache
-      // const cachedUsers = myCache.get(cacheKey);
-      // if (cachedUsers) {
-      //   return {
-      //     status: "success",
-      //     error: false,
-      //     statusCode: httpStatus.OK,
-      //     message: "Users retrieved successfully ",
-      //     data: cachedUsers,
-      //   };
-      // }
+      const cachedUsers = myCache.get(cacheKey);
+      if (cachedUsers) {
+        return {
+          status: "success",
+          error: false,
+          statusCode: httpStatus.OK,
+          message: "Users retrieved successfully ",
+          data: cachedUsers,
+        };
+      }
 
       // If not in cache, fetch from the database
       const users = await userRepository.findAll();
@@ -103,7 +109,7 @@ class UserService {
         return { status: "error", message: "No users found." };
 
       // Store the users in the cache
-      // myCache.set(cacheKey, users, 600);
+      myCache.set(cacheKey, users, 600);
 
       return {
         status: "success",
@@ -160,6 +166,9 @@ class UserService {
         };
       }
 
+      // Invalidate the cache
+      myCache.del("allUsers"); // Remove the cached users
+
       return {
         status: "success",
         error: false,
@@ -189,6 +198,9 @@ class UserService {
 
         await follower.save();
         await followee.save();
+
+        // Invalidate the cache
+        myCache.del("allUsers"); // Remove the cached users
 
         return {
           status: "success",
@@ -268,6 +280,9 @@ class UserService {
 
         await follower.save();
         await followee.save();
+
+        // Invalidate the cache
+        myCache.del("allUsers"); // Remove the cached users
 
         return {
           status: "success",

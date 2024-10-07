@@ -34,6 +34,9 @@ class TweetService {
       });
 
       if (!tweet) return defaultError;
+
+      // Invalidate the cache
+      myCache.del("allTweet"); // Remove the cached tweets
       return {
         status: "success",
         error: false,
@@ -52,6 +55,9 @@ class TweetService {
     try {
       const user = await tweetRepository.delete(id);
       if (!user) return doesNotExistError;
+
+      // Invalidate the cache
+      myCache.del("allTweet"); // Remove the cached tweets
 
       return {
         status: "success",
@@ -143,6 +149,9 @@ class TweetService {
           message: "Failed to update tweet.",
         };
       }
+
+      // Invalidate the cache
+      myCache.del("allTweet"); // Remove the cached tweets
 
       return {
         status: "success",
