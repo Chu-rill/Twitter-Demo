@@ -19,9 +19,6 @@ class TweetService {
     user
   ) {
     try {
-      let existingTweet = await tweetRepository.getByTweet(tweetContent);
-      if (existingTweet) return noDuplicateError;
-
       const tweet = await tweetRepository.createTweet({
         tweet: tweetContent,
         username,
